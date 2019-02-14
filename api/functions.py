@@ -58,8 +58,17 @@ class Bus:
         distance = R*c
         return distance
 
-    def nearestDepotFinder(self, location):
-        pass
+    def nearestDepotList(self, location):
+        getData = []
+        getData = self.getDepotData()
+        for i in getData:
+            i['distance'] = self.distance(location['longitude'],location['latitude'], i['latitude'],i['longitude'])
+        
+        getData.sort(lambda x,y : cmp(x['distance'], y['distance']))
+        print(str(getData))
+        retrun getData
+
+        
     
 
     def getDepotData(self):
@@ -74,7 +83,7 @@ class Bus:
         pass
     
     def assignSupplyBus(self,bus):
-        pass
+        DepotList = self.nearestDepotList(bus)
     
     
     

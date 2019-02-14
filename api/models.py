@@ -5,6 +5,7 @@ class Supply(models.Model):
     bus_no = models.CharField(max_length = 100, primary_key=True)
     route_no = models.IntegerField()
     depotno = models.IntegerField( default=0)
+    supply_bus_no = models.IntegerField(default = 0)
     status = models.CharField(max_length = 100, null =True, blank = True)
 
     def __str__(self):
