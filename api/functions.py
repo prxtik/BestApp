@@ -1,16 +1,39 @@
 
 from math import sin, cos, sqrt, atan2, radians
-from .models import BreakDownBus
+from datetime import datetime
+from .models import BreakDownBus,RequestLog,BusDepot,Supply
 class Bus:
-    queue = []
-    brokenbusdata = {}
-    def addDataInQueue(self,data):
+    def addData(self,data):
         location={}
+        location['bus_no'] = data['bus_no']
+        location['route_no'] = data['route_no']
         location['latitude'] = data['latitude']
         location['longitude'] = data['longitude']
         location['timestamp'] = data['timestamp']
+        location['status'] = 'O'
+        loc = {}
+        loc['latitude'] = location['latitude']
+        loc['longitude'] = location['longitude']
+        location['location'] = str(loc)
         print(str(location))
-        self.queue.append(location)
+        bus = BreakDownBus(
+            bus_no = location['bus_no'],
+            route_no = location['route_no'],
+            breakDown_Lat = location['latitude'],
+            breakDown_Lon = location['longitude'],
+            status = location['status']
+        )
+        log = RequestLog(
+            BusNo = location['bus_no'],
+            routeNo = location['route_no'],
+            logTime = str(datetime.now()),
+            location = location['location'],
+            depotAssigned = "None",
+            CurrentStatus = location['status']
+        )
+        bus.save()
+        log.save()
+        
 
     def popDatafromQueue(self):
         loc = self.queue.pop()
@@ -35,6 +58,26 @@ class Bus:
         distance = R*c
         return distance
 
+    def nearestDepotFinder(self, location):
+        pass
+    
+
+    def getDepotData(self):
+        """
+            This function returns a list of dictionaries that contains all the depot data for
+            calculating the distance from the break down bus and selecting the nearest supply bus.
+        """
+        depotData = list(BusDepot.objects.all().values())
+        return depotData
+    
+    def createRequestLog(self, bus):
+        pass
+    
+    def assignSupplyBus(self,bus):
+        pass
+    
+    
+    
     def getBrokenBusLocation(self):
         location = BreakDownBus.objects.all().first()
         loc = {}
