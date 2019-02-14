@@ -33,6 +33,7 @@ class Bus:
         )
         bus.save()
         log.save()
+        self.assignSupplyBus(location)
         
 
     def popDatafromQueue(self):
@@ -66,7 +67,7 @@ class Bus:
         
         getData.sort(lambda x,y : cmp(x['distance'], y['distance']))
         print(str(getData))
-        retrun getData
+        return getData
 
         
     
@@ -83,7 +84,27 @@ class Bus:
         pass
     
     def assignSupplyBus(self,bus):
-        DepotList = self.nearestDepotList(bus)git 
+        DepotList = self.nearestDepotList(bus)
+        for i in DepotList:
+            query = Supply.objects.filter(depotno = i['depotNo'],status='AVAIL').values().first()
+            if query != None:
+                query.status = 'NA'
+                print(" bus assigned  info "+ str(query))
+                log = RequestLog(
+                    BusNo = bus['bus_no'],
+                    routeNo = bus['route_no'],
+                    logTime = str(datetime.now()),
+                    location = bus['location'],
+                    depotAssigned = query.depotno,
+                    CurrentStatus = 'Assigned'
+                )
+                log.save()
+                query.save(update_fields = ['status'])
+                break
+            else:
+                continue
+            
+        return query
     
     
     
@@ -93,8 +114,6 @@ class Bus:
         loc['latitude'] =location.breakDown_Lat
         loc['longitude']=location.breakDown_Lon
         return loc
-
-
 
 
 
