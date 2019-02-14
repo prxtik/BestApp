@@ -83,7 +83,7 @@ class Bus:
         pass
     
     def assignSupplyBus(self,bus):
-        DepotList = self.nearestDepotList(bus)
+        DepotList = self.nearestDepotList(bus)git 
     
     
     
